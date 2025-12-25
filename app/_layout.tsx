@@ -1,24 +1,89 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
-
+import { useDismissKeyboardOnBackground } from "@/hooks";
+import {
+  MutationCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { useFonts } from "expo-font";
+import { SplashScreen, Stack } from "expo-router";
+import React, { useCallback, useEffect } from "react";
+import BootSplash from "react-native-bootsplash";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import "react-native-get-random-values";
+import { KeyboardProvider } from "react-native-keyboard-controller";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  useDismissKeyboardOnBackground();
+  useEffect(() => {
+    const init = async () => {};
 
+    init().finally(async () => {
+      await BootSplash.hide({ fade: true });
+    });
+  }, []);
+  const [fontsLoaded, fontError] = useFonts({
+    "Inter-Bold": require("~/assets/fonts/Inter-Bold.ttf"),
+    "Inter-ExtraLight": require("~/assets/fonts/Inter-ExtraLight.ttf"),
+    "Inter-Light": require("~/assets/fonts/Inter-Light.ttf"),
+    "Inter-Medium": require("~/assets/fonts/Inter-Medium.ttf"),
+    "Inter-Regular": require("~/assets/fonts/Inter-Regular.ttf"),
+    "Inter-SemiBold": require("~/assets/fonts/Inter-SemiBold.ttf"),
+    "Inter-Thin": require("~/assets/fonts/Inter-Thin.ttf"),
+    "Satoshi-Bold": require("~/assets/fonts/Satoshi-Bold.otf"),
+    "Satoshi-Light": require("~/assets/fonts/Satoshi-Light.otf"),
+    "Satoshi-Medium": require("~/assets/fonts/Satoshi-Medium.otf"),
+    "Satoshi-Regular": require("~/assets/fonts/Satoshi-Regular.otf"),
+  });
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded || fontError) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  useEffect(() => {
+    onLayoutRootView();
+  }, [onLayoutRootView]);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
+  const queryClient = new QueryClient({
+    mutationCache: new MutationCache({
+      onSuccess: (_data, _variables, _context, mutation) => {
+        const invalidateQuery = mutation?.meta?.invalidateQuery as string[];
+        if (invalidateQuery) {
+          invalidateQuery?.map((item) => {
+            setTimeout(() => {
+              queryClient.invalidateQueries({
+                queryKey: [item],
+              });
+            }, 200);
+          });
+        }
+      },
+    }),
+  });
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <KeyboardProvider>
+        <GestureHandlerRootView>
+          <SafeAreaProvider style={[{ flex: 1 }]}>
+            <MainNavigation />
+          </SafeAreaProvider>
+        </GestureHandlerRootView>
+      </KeyboardProvider>
+    </QueryClientProvider>
   );
 }
+
+const MainNavigation = () => {
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        animation: "ios_from_right",
+      }}
+    />
+  );
+};
