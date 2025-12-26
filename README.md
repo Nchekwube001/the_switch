@@ -37,6 +37,17 @@ React Native (Expo Router) mobile app with authentication and a home dashboard e
    npm run start
    ```
 
+4. Run the app
+
+   ```bash
+   press either "a" or "i" to run the app on android or ios respectively
+   ```
+
+5. You can either create an account and login, or login with my default account:
+
+username:unekwe,
+password:P@ssword1
+
 ## Common scripts
 
 - `npm run android` - run on Android device/emulator
