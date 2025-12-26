@@ -5,12 +5,14 @@ import HomeInactive from "@/assets/svgs/HomeInactive.svg";
 import { scale } from "@/constants/scale";
 import { ChangeCase, Trigger } from "@/constants/utils";
 import globalStyle from "@/globalstyle/globalStyle";
+import { AppQueryKeys } from "@/service/shared/AppQueryKeys";
 import { ImpactFeedbackStyle } from "expo-haptics";
 import { FC } from "react";
 import { Pressable } from "react-native";
 import Animated, { FadeIn, FadeOut, ZoomIn } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUnistyles } from "react-native-unistyles";
+import ImageComponent from "../image/ImageComponent";
 import Box from "../layout/Box";
 
 export default function CustomTabBar({
@@ -190,8 +192,16 @@ const ProfileIcon = () => {
           aspectRatio: 1,
           borderRadius: 24,
         },
+        globalStyle.overflowHidden,
       ]}
       backgroundColor="primary500"
-    ></Box>
+    >
+      <ImageComponent
+        style={[globalStyle.w10, globalStyle.h10]}
+        source={{
+          uri: AppQueryKeys.uri,
+        }}
+      />
+    </Box>
   );
 };

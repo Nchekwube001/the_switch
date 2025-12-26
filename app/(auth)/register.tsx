@@ -37,11 +37,12 @@ const Register = () => {
     onSuccess: (registerResponse) => {
       setLoggedInState({
         userId: registerResponse?.data?.id ?? "",
+        loggedIn: true,
       });
       router.replace("/home");
     },
     meta: {
-      successMessage: "Account created, please login",
+      successMessage: "Account created successfully",
     },
   });
   const createUser = (data: User) => {

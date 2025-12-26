@@ -1,11 +1,13 @@
+import FaceID from "@/assets/svgs/FaceID.svg";
 import ButtonComponent from "@/components/buttons/Button";
 import HeaderComponent from "@/components/header/HeaderComponent";
 import Box from "@/components/layout/Box";
 import MainLayoutComponent from "@/components/layout/MainLayoutComponent";
+import PressableComponent from "@/components/pressable/PressableComponent";
 import TextInputComponent from "@/components/textInput/TextInputComponent";
 import AlreadyHaveComponent from "@/components/utils/AlreadyHaveComponent";
 import TitleText from "@/components/utils/TitleText";
-import { trimString } from "@/constants/utils";
+import { LocalAuthentication, trimString } from "@/constants/utils";
 import globalStyle from "@/globalstyle/globalStyle";
 import { AuthService } from "@/service/AuthService";
 import { User } from "@/service/types";
@@ -24,6 +26,8 @@ const LoginScreen = () => {
     handleSubmit,
     control,
     getValues,
+    reset,
+    setValue,
     formState: { errors },
   } = useForm<loginType>({
     defaultValues: {
@@ -43,6 +47,7 @@ const LoginScreen = () => {
       } else if (user.password === getValues("password")) {
         setLoggedInState({
           userId: user?.id ?? "",
+          loggedIn: true,
         });
         router.replace("/home");
       }
@@ -50,6 +55,20 @@ const LoginScreen = () => {
   });
   const loginUser = (data: loginType) => {
     mutateAsync(data);
+  };
+  const openAuth = async () => {
+    try {
+      const auth = await LocalAuthentication.authenticateAsync();
+      if (auth.success) {
+        setValue("password", "P@ssword1", {
+          shouldValidate: true,
+        });
+        mutateAsync({
+          password: "P@ssword1",
+          username: "unekwe",
+        });
+      }
+    } catch {}
   };
   return (
     <MainLayoutComponent>
@@ -87,6 +106,7 @@ const LoginScreen = () => {
               title={"Password"}
               placeholder={"Password"}
               onBlur={onBlur}
+              variant="password"
               errorText={errors?.password?.message}
             />
           )}
@@ -102,6 +122,11 @@ const LoginScreen = () => {
           onPress={handleSubmit(loginUser)}
           loading={isPending}
         />
+        <Box style={[globalStyle.center]}>
+          <PressableComponent onPress={openAuth}>
+            {<FaceID />}
+          </PressableComponent>
+        </Box>
         <AlreadyHaveComponent variant="register" />
       </Box>
     </MainLayoutComponent>

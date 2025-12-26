@@ -1,6 +1,8 @@
 import * as Haptics from "expo-haptics";
 import { Platform } from "react-native";
 export * as ChangeCase from "change-case";
+export * as LocalAuthentication from "expo-local-authentication";
+
 export class Trigger {
   static readonly ImpactFeedbackStyle = Haptics.ImpactFeedbackStyle;
   static trigger = (
