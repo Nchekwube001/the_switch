@@ -1,8 +1,23 @@
-# Welcome to your Expo app 👋
+# Interswitch Mobile App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+React Native (Expo Router) mobile app with authentication and a home dashboard experience.
 
-## Get started
+## What is implemented
+
+- Login screen with username/password validation and password visibility toggle
+- Face ID login flow using Expo Local Authentication
+- Home dashboard with account cards, quick actions, and a transaction feed
+- Skeleton loading states for profile and card data
+
+## Tech highlights
+
+- Expo Router for file-based routing
+- React Query for data fetching and caching
+- React Hook Form for form state and validation
+- Unistyles + custom global styles for consistent theming
+- SVG icon system with `react-native-svg`
+
+## Getting started
 
 1. Install dependencies
 
@@ -10,41 +25,50 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npm install
    ```
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+2. Link native dependencies
 
 ```bash
-npm run reset-project
+ npm run prebuild
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+3. Start the app (dev client)
 
-## Learn more
+   ```bash
+   npm run start
+   ```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Common scripts
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- `npm run android` - run on Android device/emulator
+- `npm run ios` - run on iOS simulator
+- `npm run web` - run in the browser
+- `npm run lint` - lint the project
 
-## Join the community
+## Project structure (high level)
 
-Join our community of developers creating universal apps.
+- `app/` - screens and routes
+- `components/` - reusable UI components
+- `assets/` - images and SVGs
+- `constants/` - utilities and shared constants
+- `service/` - API services and types
+- `store/` - app state management
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Screenshots and demo
+
+- `assets//demo/register.png` - Register screen
+- `assets//screenshots/login.png` - Login screen
+- `assets//screenshots/home.png` - Home dashboard
+- `assets//demo/profile.png` - Profile screen
+
+## API endpoints and mock data
+
+This app currently uses service modules in `service/` with mocked data responses.
+If you add real endpoints, document them here.
+
+## Face ID setup notes (iOS)
+
+- Use a physical device for real Face ID; the simulator uses enrolled face simulation.
+- In iOS Simulator, enroll via `Features > Face ID > Enroll` and trigger via
+  `Features > Face ID > Matching Face` or `Non-matching Face`.
+- Ensure the app has Face ID permission granted in Settings (device) or
+  `Settings > Privacy & Security > Face ID` (simulator).
