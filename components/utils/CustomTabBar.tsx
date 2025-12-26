@@ -6,33 +6,12 @@ import { scale } from "@/constants/scale";
 import { ChangeCase, Trigger } from "@/constants/utils";
 import globalStyle from "@/globalstyle/globalStyle";
 import { ImpactFeedbackStyle } from "expo-haptics";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Pressable } from "react-native";
-import Animated, {
-  FadeIn,
-  FadeOut,
-  useSharedValue,
-  ZoomIn,
-} from "react-native-reanimated";
+import Animated, { FadeIn, FadeOut, ZoomIn } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUnistyles } from "react-native-unistyles";
 import Box from "../layout/Box";
-type TCurrentTabLayout = Record<string, TTabLayout>;
-
-type TTabLayout = {
-  width: number;
-  height: number;
-  x: number;
-  y: number;
-};
-
-const initialTabLayout = {
-  width: 0,
-  height: 0,
-  x: 0,
-  y: 0,
-};
-const AnimatedPlatformPressable = Animated.createAnimatedComponent(Pressable);
 
 export default function CustomTabBar({
   state,
@@ -41,24 +20,6 @@ export default function CustomTabBar({
 }: BottomTabBarProps) {
   const { theme } = useUnistyles();
 
-  const activeTabLayout = useSharedValue<TTabLayout>(initialTabLayout);
-  const [layouts, setLayouts] = useState<TCurrentTabLayout>({});
-  const [activeTab, setActiveTab] = useState("home");
-
-  const handleLayout = (id: string, event: any, index: number) => {
-    const { width, height, x, y } = event.nativeEvent.layout;
-    // if (id === activeTab || index === 0) {
-    //   activeTabLayout.value = {width, height, x, y};
-    // }
-    setLayouts((prevLayouts) => ({
-      ...prevLayouts,
-      [id]: { width, height, x, y },
-    }));
-  };
-  const onHandlePress = (id: string) => {
-    // activeTabLayout.value = withTiming(layouts[id]);
-    setActiveTab(id);
-  };
   return (
     <SafeAreaView
       edges={["bottom"]}
@@ -100,8 +61,6 @@ export default function CustomTabBar({
           const isFocused = state.index === index;
 
           const onPress = (index: string) => {
-            onHandlePress(index);
-
             const event = navigation.emit({
               type: "tabPress",
               target: route.key,

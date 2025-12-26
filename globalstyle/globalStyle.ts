@@ -9,6 +9,16 @@ const globalStyle = StyleSheet.create((theme, rt) => ({
   underline: {
     textDecorationLine: "underline",
   },
+  apiToast: {
+    position: "absolute",
+    top: rt.insets.top + scale(20),
+    width: "100%",
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: scale(10),
+    zIndex: 1000,
+  },
   transparent: {
     backgroundColor: "transparent",
   },

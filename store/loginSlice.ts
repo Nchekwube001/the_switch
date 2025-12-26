@@ -1,11 +1,12 @@
-import {create} from 'zustand';
-import {createJSONStorage, persist} from 'zustand/middleware';
-import {expoSecureStorage} from './localstorage';
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { expoSecureStorage } from "./localstorage";
 export type loginState = {
   loggedIn: boolean;
   isRefreshing: boolean;
   access_token: string;
   refresh_token: string;
+  userId: string;
 };
 
 export interface LoginActions {
@@ -14,20 +15,21 @@ export interface LoginActions {
 
 export const useLoggedInStore = create<loginState & LoginActions>()(
   persist(
-    set => ({
-      access_token: '',
+    (set) => ({
+      access_token: "",
       loggedIn: false,
       isRefreshing: false,
-      refresh_token: '',
+      refresh_token: "",
+      userId: "",
       setLoggedInState: (val: Partial<loginState>) =>
-        set(state => ({
+        set((state) => ({
           ...state,
           ...val,
         })),
     }),
     {
-      name: 'login-state', // name of the item in the storage (must be unique)
-      storage: createJSONStorage(() => expoSecureStorage), // (optional) by default, 'localStorage' is used
-    },
-  ),
+      name: "login-state",
+      storage: createJSONStorage(() => expoSecureStorage),
+    }
+  )
 );

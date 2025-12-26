@@ -1,4 +1,6 @@
+import ToastComponent from "@/components/toast/ToastComponent";
 import { useDismissKeyboardOnBackground } from "@/hooks";
+import { useToastStore } from "@/store/toastStore";
 import {
   MutationCache,
   QueryClient,
@@ -22,23 +24,24 @@ export default function RootLayout() {
     });
   }, []);
   const [fontsLoaded, fontError] = useFonts({
-    "Inter-Bold": require("~/assets/fonts/Inter-Bold.ttf"),
-    "Inter-ExtraLight": require("~/assets/fonts/Inter-ExtraLight.ttf"),
-    "Inter-Light": require("~/assets/fonts/Inter-Light.ttf"),
-    "Inter-Medium": require("~/assets/fonts/Inter-Medium.ttf"),
-    "Inter-Regular": require("~/assets/fonts/Inter-Regular.ttf"),
-    "Inter-SemiBold": require("~/assets/fonts/Inter-SemiBold.ttf"),
-    "Inter-Thin": require("~/assets/fonts/Inter-Thin.ttf"),
-    "Satoshi-Bold": require("~/assets/fonts/Satoshi-Bold.otf"),
-    "Satoshi-Light": require("~/assets/fonts/Satoshi-Light.otf"),
-    "Satoshi-Medium": require("~/assets/fonts/Satoshi-Medium.otf"),
-    "Satoshi-Regular": require("~/assets/fonts/Satoshi-Regular.otf"),
+    "Inter-Bold": require("@/assets/fonts/Inter-Bold.ttf"),
+    "Inter-ExtraLight": require("@/assets/fonts/Inter-ExtraLight.ttf"),
+    "Inter-Light": require("@/assets/fonts/Inter-Light.ttf"),
+    "Inter-Medium": require("@/assets/fonts/Inter-Medium.ttf"),
+    "Inter-Regular": require("@/assets/fonts/Inter-Regular.ttf"),
+    "Inter-SemiBold": require("@/assets/fonts/Inter-SemiBold.ttf"),
+    "Inter-Thin": require("@/assets/fonts/Inter-Thin.ttf"),
+    "Satoshi-Bold": require("@/assets/fonts/Satoshi-Bold.otf"),
+    "Satoshi-Light": require("@/assets/fonts/Satoshi-Light.otf"),
+    "Satoshi-Medium": require("@/assets/fonts/Satoshi-Medium.otf"),
+    "Satoshi-Regular": require("@/assets/fonts/Satoshi-Regular.otf"),
   });
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
       await SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError]);
+  const { showToast } = useToastStore();
 
   useEffect(() => {
     onLayoutRootView();
@@ -51,6 +54,8 @@ export default function RootLayout() {
   const queryClient = new QueryClient({
     mutationCache: new MutationCache({
       onSuccess: (_data, _variables, _context, mutation) => {
+        const successMessage = mutation?.meta?.successMessage as string;
+
         const invalidateQuery = mutation?.meta?.invalidateQuery as string[];
         if (invalidateQuery) {
           invalidateQuery?.map((item) => {
@@ -59,6 +64,12 @@ export default function RootLayout() {
                 queryKey: [item],
               });
             }, 200);
+          });
+        }
+        if (successMessage) {
+          showToast({
+            message: successMessage,
+            variant: "success",
           });
         }
       },
@@ -70,6 +81,7 @@ export default function RootLayout() {
         <GestureHandlerRootView>
           <SafeAreaProvider style={[{ flex: 1 }]}>
             <MainNavigation />
+            <ToastComponent />
           </SafeAreaProvider>
         </GestureHandlerRootView>
       </KeyboardProvider>
