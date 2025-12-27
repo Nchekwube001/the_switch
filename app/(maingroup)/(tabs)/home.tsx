@@ -1,3 +1,4 @@
+import Hamburger from "@/assets/svgs/Hamburger.svg";
 import Box from "@/components/layout/Box";
 import MainLayoutComponent from "@/components/layout/MainLayoutComponent";
 import PressableComponent from "@/components/pressable/PressableComponent";
@@ -7,10 +8,11 @@ import SkeletonComponent from "@/components/utils/SkeletonComponent";
 import { scale } from "@/constants/scale";
 import { ChangeCase } from "@/constants/utils";
 import globalStyle from "@/globalstyle/globalStyle";
+import { useGetUserProfile } from "@/hooks";
 import { AppQueryKeys } from "@/service/shared/AppQueryKeys";
 import { Card as CardType } from "@/service/types";
 import { UserService } from "@/service/UserService";
-import { useLoggedInStore } from "@/store/loginSlice";
+import { useDrawerStore } from "@/store/drawerStore";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -21,15 +23,14 @@ import React from "react";
 import { FlatList } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { UnistylesRuntime, useUnistyles } from "react-native-unistyles";
+
 const _gap = scale(20);
 const _cardWidth = UnistylesRuntime.screen.width * 0.8;
 const _cardWidthFull = UnistylesRuntime.screen.width - scale(40);
 const Home = () => {
-  const { userId } = useLoggedInStore();
-  const { data: profileData, isLoading: isLoadingProfile } = useQuery({
-    queryKey: [AppQueryKeys.user],
-    queryFn: () => UserService.getUserById(userId),
-  });
+  const { setShowDrawer } = useDrawerStore();
+  const { isLoadingProfile, profileData } = useGetUserProfile();
+
   const { data, isLoading } = useQuery({
     queryKey: [AppQueryKeys.cards],
     queryFn: UserService.getCards,
@@ -78,14 +79,32 @@ const Home = () => {
             globalStyle.px2,
           ]}
         >
-          {isLoadingProfile ? (
-            <SkeletonComponent height={scale(14)} width={scale(80)} />
-          ) : (
-            <TextComponent>
-              Welcome back,&nbsp;
-              {ChangeCase.capitalCase(profileData?.firstName ?? "")}
-            </TextComponent>
-          )}
+          <Box
+            style={[
+              globalStyle.flexrow,
+              globalStyle.alignItemsCenter,
+              globalStyle.gap8,
+            ]}
+          >
+            <PressableComponent
+              onPress={() => {
+                setShowDrawer(true);
+              }}
+              style={[]}
+            >
+              <Card style={[globalStyle.p0p6, globalStyle.br]}>
+                {<Hamburger />}
+              </Card>
+            </PressableComponent>
+            {isLoadingProfile ? (
+              <SkeletonComponent height={scale(14)} width={scale(80)} />
+            ) : (
+              <TextComponent>
+                Welcome back,&nbsp;
+                {ChangeCase.capitalCase(profileData?.firstName ?? "")}
+              </TextComponent>
+            )}
+          </Box>
 
           <Card style={[globalStyle.br, globalStyle.p0p6]}>
             <FontAwesome

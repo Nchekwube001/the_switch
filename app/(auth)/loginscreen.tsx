@@ -18,7 +18,7 @@ import { router } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 
-interface loginType extends Partial<Pick<User, "username" | "password">> {
+interface loginType extends Pick<User, "username" | "password"> {
   isFingerprint?: boolean;
 }
 const LoginScreen = () => {
@@ -68,6 +68,7 @@ const LoginScreen = () => {
         mutateAsync({
           username,
           isFingerprint: true,
+          password: "",
         });
       }
     } catch {}

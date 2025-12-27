@@ -1,9 +1,11 @@
+import DrawerComponent from "@/components/utils/DrawerComponent";
 import { Stack } from "expo-router";
 
 const AppLayout = () => {
   return (
     <>
       <AppStack />
+      <DrawerComponent />
     </>
   );
 };
