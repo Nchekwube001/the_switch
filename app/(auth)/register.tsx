@@ -38,6 +38,7 @@ const Register = () => {
       setLoggedInState({
         userId: registerResponse?.data?.id ?? "",
         loggedIn: true,
+        username: registerResponse?.data?.username ?? "",
       });
       router.replace("/home");
     },

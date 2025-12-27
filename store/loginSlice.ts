@@ -7,6 +7,7 @@ export type loginState = {
   access_token: string;
   refresh_token: string;
   userId: string;
+  username: string;
 };
 
 export interface LoginActions {
@@ -21,6 +22,7 @@ export const useLoggedInStore = create<loginState & LoginActions>()(
       isRefreshing: false,
       refresh_token: "",
       userId: "",
+      username: "",
       setLoggedInState: (val: Partial<loginState>) =>
         set((state) => ({
           ...state,

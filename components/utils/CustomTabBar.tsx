@@ -37,7 +37,8 @@ export default function CustomTabBar({
         style={[
           globalStyle.w10,
           globalStyle.center,
-          globalStyle.py1,
+          globalStyle.pt1,
+          globalStyle.pb0p3,
           {
             flexDirection: "row",
             alignSelf: "center",

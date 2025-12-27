@@ -18,15 +18,16 @@ import { router } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 
-type loginType = Pick<User, "username" | "password">;
+interface loginType extends Partial<Pick<User, "username" | "password">> {
+  isFingerprint?: boolean;
+}
 const LoginScreen = () => {
-  const { setLoggedInState } = useLoggedInStore();
+  const { setLoggedInState, username } = useLoggedInStore();
   const { showToast } = useToastStore();
   const {
     handleSubmit,
     control,
     getValues,
-    reset,
     setValue,
     formState: { errors },
   } = useForm<loginType>({
@@ -37,17 +38,21 @@ const LoginScreen = () => {
   });
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (data: loginType) => AuthService.logInFunction(data),
-    onSuccess: (loginResponse) => {
+    onSuccess: (loginResponse, payload) => {
       const user = loginResponse?.data?.[0];
-      if (user.password !== getValues("password")) {
+      if (!payload.isFingerprint && user.password !== getValues("password")) {
         showToast({
           message: "Invalid credentials",
           variant: "error",
         });
-      } else if (user.password === getValues("password")) {
+      } else if (
+        payload.isFingerprint ||
+        user.password === getValues("password")
+      ) {
         setLoggedInState({
           userId: user?.id ?? "",
           loggedIn: true,
+          username: user?.username ?? "",
         });
         router.replace("/home");
       }
@@ -60,12 +65,9 @@ const LoginScreen = () => {
     try {
       const auth = await LocalAuthentication.authenticateAsync();
       if (auth.success) {
-        setValue("password", "P@ssword1", {
-          shouldValidate: true,
-        });
         mutateAsync({
-          password: "P@ssword1",
-          username: "unekwe",
+          username,
+          isFingerprint: true,
         });
       }
     } catch {}
@@ -81,7 +83,7 @@ const LoginScreen = () => {
           name="username"
           render={({ field: { onChange, value, onBlur } }) => (
             <TextInputComponent
-              value={trimString(value)}
+              value={trimString(value ?? "")}
               onChangeText={onChange}
               title={"Username"}
               placeholder={"Username"}
@@ -101,7 +103,7 @@ const LoginScreen = () => {
           name="password"
           render={({ field: { onChange, value, onBlur } }) => (
             <TextInputComponent
-              value={trimString(value)}
+              value={trimString(value ?? "")}
               onChangeText={onChange}
               title={"Password"}
               placeholder={"Password"}
@@ -122,11 +124,13 @@ const LoginScreen = () => {
           onPress={handleSubmit(loginUser)}
           loading={isPending}
         />
-        <Box style={[globalStyle.center]}>
-          <PressableComponent onPress={openAuth}>
-            {<FaceID />}
-          </PressableComponent>
-        </Box>
+        {username && (
+          <Box style={[globalStyle.center]}>
+            <PressableComponent onPress={openAuth}>
+              {<FaceID />}
+            </PressableComponent>
+          </Box>
+        )}
         <AlreadyHaveComponent variant="register" />
       </Box>
     </MainLayoutComponent>
