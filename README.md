@@ -66,10 +66,10 @@ password:P@ssword1
 
 ## Screenshots and demo
 
-- `assets//demo/register.png` - Register screen
-- `assets//screenshots/login.png` - Login screen
-- `assets//screenshots/home.png` - Home dashboard
-- `assets//demo/profile.png` - Profile screen
+![Register screen](assets/screenshots/register.png)
+![Login screen](assets/screenshots/login.png)
+![Home dashboard](assets/screenshots/home.png)
+![Profile screen](assets/screenshots/profile.png)
 
 ## API endpoints and mock data
 
