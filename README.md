@@ -48,6 +48,8 @@ React Native (Expo Router) mobile app with authentication and a home dashboard e
 username:unekwe,
 password:P@ssword1
 
+6. login or register once to store your username in secure storage, after that subsequent logins can be done using biometric
+
 ## Common scripts
 
 - `npm run android` - run on Android device/emulator
